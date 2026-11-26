@@ -373,36 +373,42 @@
 
     <script>
         // Toggle menu mobile
-        const mobileBtn = document.getElementById('mobile-menu-btn');
-        const mobileMenu = document.getElementById('mobile-menu');
-        mobileBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
-        document.querySelectorAll('.mobile-link').forEach(link => {
-            link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
-        });
+        var mobileBtn = document.getElementById('mobile-menu-btn');
+        var mobileMenu = document.getElementById('mobile-menu');
+        if (mobileBtn && mobileMenu) {
+            mobileBtn.addEventListener('click', function () {
+                mobileMenu.classList.toggle('hidden');
+            });
+            document.querySelectorAll('.mobile-link').forEach(function (link) {
+                link.addEventListener('click', function () {
+                    mobileMenu.classList.add('hidden');
+                });
+            });
+        }
 
         // Filter proyek
-        const filterBtns = document.querySelectorAll('.filter-btn');
-        const projectCards = document.querySelectorAll('.project-card');
+        var filterBtns = document.querySelectorAll('.filter-btn');
+        var projectCards = document.querySelectorAll('.project-card');
 
-        filterBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                filterBtns.forEach(b => {
+        filterBtns.forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                filterBtns.forEach(function (b) {
                     b.classList.remove('bg-emerald-500', 'text-slate-950');
                     b.classList.add('bg-card', 'border', 'border-white/10', 'text-gray-300');
                 });
                 btn.classList.remove('bg-card', 'border', 'border-white/10', 'text-gray-300');
                 btn.classList.add('bg-emerald-500', 'text-slate-950');
 
-                const filter = btn.dataset.filter;
-                projectCards.forEach(card => {
-                    const match = filter === 'all' || card.dataset.category === filter;
+                var filter = btn.dataset.filter;
+                projectCards.forEach(function (card) {
+                    var match = filter === 'all' || card.dataset.category === filter;
                     card.classList.toggle('hidden', !match);
                 });
             });
         });
 
-        // Data & Modal studi kasus
-        const projectsData = {
+        // Data studi kasus
+        var projectsData = {
             tbc: {
                 tag: 'Studi Kasus Skripsi • Sistem Informasi',
                 title: 'Platform Web Monitoring Kepatuhan Pengobatan Pasien TBC',
@@ -436,3 +442,74 @@
                 role: 'Peran: Operations & CRM Intern',
                 problem: 'Memastikan konsistensi pencatatan interaksi pelanggan pada sistem CRM serta menyajikan ringkasan operasional yang akurat untuk evaluasi tindak lanjut.',
                 features: [
+                    'Mengelola dan memverifikasi data pelanggan pada sistem Customer Relationship Management (CRM).',
+                    'Menyusun laporan evaluasi operasional secara berkala berbasis data pencatatan sistem.',
+                    'Mengidentifikasi titik perbaikan pada alur tindak lanjut operasional.'
+                ],
+                stack: 'Sistem CRM, Spreadsheet / Excel, Dokumentasi Proses Bisnis',
+                link: 'https://github.com/usernameanda'
+            }
+        };
+
+        var modal = document.getElementById('project-modal');
+        var closeModalBtn = document.getElementById('close-modal-btn');
+
+        window.openProjectModal = function (key) {
+            var data = projectsData[key];
+            if (!data || !modal) return;
+
+            document.getElementById('modal-tag').textContent = data.tag;
+            document.getElementById('modal-title').textContent = data.title;
+            document.getElementById('modal-role').textContent = data.role;
+            document.getElementById('modal-problem').textContent = data.problem;
+            document.getElementById('modal-stack').textContent = data.stack;
+            document.getElementById('modal-link').href = data.link;
+
+            var listEl = document.getElementById('modal-features');
+            listEl.innerHTML = '';
+            data.features.forEach(function (item) {
+                var li = document.createElement('li');
+                li.textContent = item;
+                listEl.appendChild(li);
+            });
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        };
+
+        function closeProjectModal() {
+            if (!modal) return;
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        if (closeModalBtn) {
+            closeModalBtn.addEventListener('click', closeProjectModal);
+        }
+
+        if (modal) {
+            modal.addEventListener('click', function (e) {
+                if (e.target === modal) closeProjectModal();
+            });
+        }
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') closeProjectModal();
+        });
+
+        // Salin email
+        var copyBtn = document.getElementById('copy-email-btn');
+        var emailText = document.getElementById('email-text');
+        if (copyBtn && emailText) {
+            copyBtn.addEventListener('click', function () {
+                navigator.clipboard.writeText(emailText.textContent.trim()).then(function () {
+                    copyBtn.textContent = 'Tersalin ✓';
+                    setTimeout(function () {
+                        copyBtn.textContent = 'Salin';
+                    }, 2000);
+                });
+            });
+        }
+    </script>
+</body>
+</html>
